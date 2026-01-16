@@ -1,6 +1,8 @@
 package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import jp.co.sss.lms.util.Constants;
 /**
  * 勤怠管理コントローラ
  * 
- * @author 東京ITスクール
+ * @author 越川昴　Task25
  */
 @Controller
 @RequestMapping("/attendance")
@@ -46,6 +48,23 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
+
+		//  SimpleDateFormatクラスでフォーマットパターンを設定する
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+		//  現在日付を取得
+		String today = sdf.format(new Date());
+
+		//  下記APIを呼び出し、過去日の未入力数をカウント
+		// ※API呼び出しに必要なパラメータを渡します（LMSユーザID、削除フラグ0、現在日付）
+		int unenteredCount = studentAttendanceService.getUnenteredCount(
+				loginUserDto.getLmsUserId(),
+				0,
+				today);
+
+		//  判定結果をモデルに格納（画面側のダイアログ表示判定用）
+		boolean showDialog = (unenteredCount > 0);
+		model.addAttribute("showUnenteredDialog", showDialog);
 
 		return "attendance/detail";
 	}

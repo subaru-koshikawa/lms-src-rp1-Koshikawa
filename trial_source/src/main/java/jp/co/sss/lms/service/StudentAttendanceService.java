@@ -26,7 +26,7 @@ import jp.co.sss.lms.util.TrainingTime;
 /**
  * 勤怠情報（受講生入力）サービス
  * 
- * @author 東京ITスクール
+ * @author 越川昴
  */
 @Service
 public class StudentAttendanceService {
@@ -73,6 +73,12 @@ public class StudentAttendanceService {
 		return attendanceManagementDtoList;
 	}
 
+	public int getUnenteredCount(Integer lmsUserId, int deleteFlg, String today) {
+		// Mapperを呼び出して、データベースから未入力件数を取得する
+		// ※Mapper側にも対応するメソッド（selectUnenteredCountなど）の定義が必要です
+		return tStudentAttendanceMapper.countUnentered(lmsUserId, deleteFlg, today);
+	}
+	
 	/**
 	 * 出退勤更新前のチェック
 	 * 
