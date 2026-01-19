@@ -109,6 +109,7 @@ public class AttendanceUtil {
 	 */
 	public LinkedHashMap<Integer, String> setBlankTime() {
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		//画面では空白、実際はnull
 		map.put(null, "");
 		for (int i = 15; i < 480;) {
 			int hour = i / 60;
@@ -130,8 +131,53 @@ public class AttendanceUtil {
 
 		}
 		return map;
+		
 	}
+	public LinkedHashMap<Integer, String> setHourMap() {
+	    LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+	    
+	    // 画面では空白、実際はnullを選択できるように設定
+	    map.put(null, "");
 
+	    // 60分(1時間)から、480分(8時間)まで、60分刻みでループ
+	    for (int i = 60; i <= 480; i += 60) {
+	        int hour = i / 60;
+	        
+	        // 1時間刻みなので分(minute)は常に0になる想定
+	        String time = hour + "時間";
+
+	        map.put(i, time);
+	    }
+	    
+	    return map;
+	}
+	
+	public LinkedHashMap<Integer, String> setMinuteMap(){
+		LinkedHashMap<Integer,String> map = new LinkedHashMap<>();
+		
+		map.put(null, "");
+		
+		for (int i = 1; i <= 480; i++) {
+	        int hour = i / 60;
+	        int minute = i % 60;
+	        String time;
+
+	        if (hour == 0) {
+	            // 60分未満： 「1分」「2分」...
+	            time = minute + "分";
+	        } else if (minute == 0) {
+	            // ちょうど1時間： 「1時間」「2時間」...
+	            time = hour + "時間";
+	        } else {
+	            // 1時間以上かつ端数あり： 「1時間1分」「1時間2分」...
+	            time = hour + "時" + minute + "分";
+	        }
+
+	        map.put(i, time);
+	    }
+		
+		return map;
+	}
 	/**
 	 * 研修日の判定
 	 * 

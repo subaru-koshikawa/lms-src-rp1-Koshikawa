@@ -24,6 +24,12 @@ public class DailyAttendanceForm {
 	private Integer blankTime;
 	/** 中抜け時間（画面表示用） */
 	private String blankTimeValue;
+	
+	private String hourMap;
+	private String hourMapValue;
+	private String minuteMap;
+	private String minuteValue;
+	
 	/** ステータス */
 	private String status;
 	/** 備考 */
