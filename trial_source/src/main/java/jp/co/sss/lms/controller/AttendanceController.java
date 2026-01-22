@@ -129,13 +129,18 @@ public class AttendanceController {
 	public String update(Model model) {
 
 		// 勤怠管理リストの取得
+		//courseIdとlmsUserIdを条件にして取得した勤怠データをattendanceManagementDtoListのリストとして受け取っている
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
+		
 		// 勤怠フォームの生成
+		// DTOのデータをFormオブジェクトに詰め替えている
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
+		
 		model.addAttribute("attendanceForm", attendanceForm);
 
+		
 		return "attendance/update";
 	}
 

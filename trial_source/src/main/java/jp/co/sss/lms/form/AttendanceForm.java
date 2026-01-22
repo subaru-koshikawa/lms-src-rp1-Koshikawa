@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class AttendanceForm {
 
+	
 	/** LMSユーザーID */
 	private Integer lmsUserId;
 	/** グループID */
