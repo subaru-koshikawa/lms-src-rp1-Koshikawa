@@ -157,9 +157,18 @@ public class AttendanceController {
 	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
 
+//		private Integer trainingStartHour;
+//		private Integer trainingStartMinute;
 		// 更新
-		String message = studentAttendanceService.update(attendanceForm);
+		String message = null;
+		try {
+			message = studentAttendanceService.update(attendanceForm);
+		} catch (jakarta.mail.internet.ParseException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
 		model.addAttribute("message", message);
+		
 		// 一覧の再取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
