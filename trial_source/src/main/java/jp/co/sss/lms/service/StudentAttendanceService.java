@@ -75,7 +75,6 @@ public class StudentAttendanceService {
 
 	public int getUnenteredCount(Integer lmsUserId, int deleteFlg, String today) {
 		// Mapperを呼び出して、データベースから未入力件数を取得する
-		// ※Mapper側にも対応するメソッド（selectUnenteredCountなど）の定義が必要です
 		return tStudentAttendanceMapper.countUnentered(lmsUserId, deleteFlg, today);
 	}
 
@@ -245,14 +244,14 @@ public class StudentAttendanceService {
 
 			// --- 設計書：時刻を「時」「分」に分割してセット ---
 			// 出勤時間
-			String startTime = dto.getTrainingStartTime();
-			dailyAttendanceForm.setTrainingStartHour(attendanceUtil.getHour(startTime));
-			dailyAttendanceForm.setTrainingStartMinute(attendanceUtil.getMinute(startTime));
+			String trainingStartTime = dto.getTrainingStartTime();
+			dailyAttendanceForm.setTrainingStartHour(attendanceUtil.getHour(trainingStartTime));
+			dailyAttendanceForm.setTrainingStartMinute(attendanceUtil.getMinute(trainingStartTime));
 
 			// 退勤時間
-			String endTime = dto.getTrainingEndTime();
-			dailyAttendanceForm.setTrainingEndHour(attendanceUtil.getHour(endTime));
-			dailyAttendanceForm.setTrainingEndMinute(attendanceUtil.getMinute(endTime));
+			String trainingEndTime = dto.getTrainingEndTime();
+			dailyAttendanceForm.setTrainingEndHour(attendanceUtil.getHour(trainingEndTime));
+			dailyAttendanceForm.setTrainingEndMinute(attendanceUtil.getMinute(trainingEndTime));
 
 			// --- 既存の処理 ---
 			if (dto.getBlankTime() != null) {
