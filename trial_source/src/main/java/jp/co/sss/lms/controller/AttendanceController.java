@@ -1,8 +1,6 @@
 package jp.co.sss.lms.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ import jp.co.sss.lms.util.Constants;
 /**
  * 勤怠管理コントローラ
  * 
- * @author 越川昴　Task25
+ * 
  */
 @Controller
 @RequestMapping("/attendance")
@@ -42,28 +40,19 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
-	public String index(Model model) {
+	public String index(Model model){
 
 		// 勤怠一覧の取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
-		//  SimpleDateFormatクラスでフォーマットパターンを設定する
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		//  現在日付を取得
-		String today = sdf.format(new Date());
-
+		// Task25 越川
 		//  下記APIを呼び出し、過去日の未入力数をカウント
-		// ※API呼び出しに必要なパラメータを渡します（LMSユーザID、削除フラグ0、現在日付）
-		int unenteredCount = studentAttendanceService.getUnenteredCount(
-				loginUserDto.getLmsUserId(),
-				0,
-				today);
-
-		//  判定結果をモデルに格納（画面側のダイアログ表示判定用）
-		boolean showDialog = (unenteredCount > 0);
+		boolean showDialog = studentAttendanceService.notEnterCheck(loginUserDto.getLmsUserId());
+				
+		
+		//これはコントローラーで大丈夫
 		model.addAttribute("showUnenteredDialog", showDialog);
 
 		return "attendance/detail";
@@ -132,15 +121,14 @@ public class AttendanceController {
 		//courseIdとlmsUserIdを条件にして取得した勤怠データをattendanceManagementDtoListのリストとして受け取っている
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
-		
+
 		// 勤怠フォームの生成
 		// DTOのデータをFormオブジェクトに詰め替えている
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
-		
+
 		model.addAttribute("attendanceForm", attendanceForm);
 
-		
 		return "attendance/update";
 	}
 
@@ -156,9 +144,6 @@ public class AttendanceController {
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
 	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
-
-//		private Integer trainingStartHour;
-//		private Integer trainingStartMinute;
 		// 更新
 		String message = null;
 		try {
@@ -168,7 +153,7 @@ public class AttendanceController {
 			e.printStackTrace();
 		}
 		model.addAttribute("message", message);
-		
+
 		// 一覧の再取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());

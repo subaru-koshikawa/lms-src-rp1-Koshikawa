@@ -27,8 +27,8 @@ public interface TStudentAttendanceMapper {
 	List<TStudentAttendance> findByLmsUserId(@Param("lmsUserId") Integer lmsUserId,
 			@Param("deleteFlg") Short deleteFlg);
 
-	int countUnentered(@Param("lmsUserId") Integer lmsUserId,
-			@Param("deleteFlg") int deleteFlg, @Param("today") String today);
+	int notEnterCount(@Param("lmsUserId") Integer lmsUserId,
+			@Param("deleteFlg") int deleteFlg, @Param("trainingDate") Date trainingDate);
 	
 	/**
 	 * 勤怠情報（受講生入力）取得（LMSユーザーID＆日付）

@@ -13,7 +13,7 @@
 		ORDER BY training_date ASC
 	</select>
 
-	<select id="countUnentered" resultType="int">
+	<select id="notEnterCount" resultType="int">
 		SELECT
 		COUNT(*)
 		FROM
@@ -24,7 +24,7 @@
 <!--		 削除フラグ-->
 		AND delete_flg = #{deleteFlg}
 <!--		 日付（入力パラメーターの日付より前）-->
-		AND cast(training_date AS DATE) &lt; cast(#{today} AS DATE)
+		AND training_date  &lt; #{trainingDate} 
 <!--		勤怠状態 != 1-->
 		AND status != '1'
 <!--		出勤時間または退勤時間が未入力（空文字またはNULL）-->

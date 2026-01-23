@@ -25,7 +25,7 @@ import jp.co.sss.lms.util.TrainingTime;
 /**
  * 勤怠情報（受講生入力）サービス
  * 
- * @author 越川昴
+ *
  */
 @Service
 public class StudentAttendanceService {
@@ -73,9 +73,27 @@ public class StudentAttendanceService {
 		return attendanceManagementDtoList;
 	}
 
-	public int getUnenteredCount(Integer lmsUserId, int deleteFlg, String today) {
+	//Task25 越川
+	public boolean notEnterCheck(Integer lmsUserId) {
+
+		//  現在日付を取得
+		//sdf.formatでsdfで指定したyyyy-MM-ddにnew Date(2026年1月22日 18時51分30秒 500ミリ秒等）の細かい情報を流し込む。
+		//sdf.formatでそぎ落とされた日付をDate型に戻す。今回はutilを使用した。
+		//Date trainingDate = sdf.parse(sdf.format(new Date()));
+
+		Date trainingDate = attendanceUtil.getTrainingDate();
+
 		// Mapperを呼び出して、データベースから未入力件数を取得する
-		return tStudentAttendanceMapper.countUnentered(lmsUserId, deleteFlg, today);
+		//引数はDBで絞り込む条件
+		int notEnterCount = tStudentAttendanceMapper.notEnterCount(
+				lmsUserId,
+				Constants.DB_FLG_FALSE,
+				trainingDate);
+
+		//  1件以上でtrue
+		boolean showDialog = (notEnterCount > 0);
+
+		return showDialog;
 	}
 
 	/**
