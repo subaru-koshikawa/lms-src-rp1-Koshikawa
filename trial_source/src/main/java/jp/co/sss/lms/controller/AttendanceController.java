@@ -122,6 +122,7 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 
+		//Task26 越川
 		// 勤怠フォームの生成
 		// DTOのデータをFormオブジェクトに詰め替えている
 		AttendanceForm attendanceForm = studentAttendanceService
@@ -154,7 +155,7 @@ public class AttendanceController {
 		}
 		model.addAttribute("message", message);
 
-		// 一覧の再取得
+		// 一覧の再取得（更新された後の画面に最新化する）
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);

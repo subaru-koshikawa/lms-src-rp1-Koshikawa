@@ -133,13 +133,11 @@
 				</table>
 
 				<div class="form-group">
-					<th:block th:if="${session.loginUserDto.role == '0001'}">
 						<a th:href="@{/attendance/detail}" class="btn btn-default">戻る</a>
-					</th:block>
-					<th:block th:if="${session.loginUserDto.role != '0001'}">
-						<input type="submit" value="戻る" name="indexCompany" class="btn btn-default" />
-					</th:block>
-					<input type="submit" value="更新" name="complete" class="btn btn-info" />
+					<form th:action="@{/attendance/update}" th:object="${attendanceForm}" method="post">
+						<input type="submit" value="更新" name="complete" class="btn btn-info" />
+						
+					</form>
 				</div>
 
 			</form>
