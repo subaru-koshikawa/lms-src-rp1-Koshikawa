@@ -12,7 +12,7 @@ import jp.co.sss.lms.entity.TStudentAttendance;
 /**
  * 勤怠情報（受講生入力）テーブルマッパー
  * 
- * @author 越川昴
+ * @author 東京ITスクール
  */
 @Mapper
 public interface TStudentAttendanceMapper {
@@ -26,7 +26,13 @@ public interface TStudentAttendanceMapper {
 	 */
 	List<TStudentAttendance> findByLmsUserId(@Param("lmsUserId") Integer lmsUserId,
 			@Param("deleteFlg") Short deleteFlg);
-
+	/*
+	 * @param lmsUserId
+	 * @param deleteFlag
+	 * @param trainingDate
+	 * @author 越川
+	 * @return 未入力件数の取得
+	 */
 	int notEnterCount(@Param("lmsUserId") Integer lmsUserId,
 			@Param("deleteFlg") int deleteFlg, @Param("trainingDate") Date trainingDate);
 	
