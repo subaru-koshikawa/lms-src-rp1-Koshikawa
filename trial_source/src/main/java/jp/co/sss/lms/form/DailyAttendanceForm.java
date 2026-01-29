@@ -25,8 +25,10 @@ public class DailyAttendanceForm {
 	/** 中抜け時間（画面表示用） */
 	private String blankTimeValue;
 	
+	
 	private Integer trainingStartHour;
 	private Integer trainingStartMinute;
+	
 	private Integer trainingEndHour;
 	private Integer trainingEndMinute;
 	

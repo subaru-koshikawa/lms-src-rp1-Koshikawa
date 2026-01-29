@@ -297,7 +297,12 @@ public class StudentAttendanceService {
 		return attendanceForm;
 	}
 
-	//Task26 越川
+
+/**
+ * @author 越川
+ * @param attendanceForm
+ * @return 勤怠編集フォーム
+ */
 	// --- 「時」「分」をまとめている
 	public void formatConversion(AttendanceForm attendanceForm) {
 		List<DailyAttendanceForm> dailyAttendance = new ArrayList<DailyAttendanceForm>();
@@ -481,7 +486,6 @@ public class StudentAttendanceService {
 				}
 
 				// ｃ:退勤時間の片方未入力チェック
-
 				if (form.getTrainingEndHour() == null && form.getTrainingEndMinute() != null) {
 					String endTime = messageUtil.getMessage("trainingEndTime");
 					result.addError(new FieldError(result.getObjectName(), "attendanceList[" + i + "].trainingEndHour",
@@ -497,7 +501,6 @@ public class StudentAttendanceService {
 				}
 
 				// d:出勤、退勤時間の片方未入力チェック
-
 				if (form.getTrainingStartTime() == null && form.getTrainingEndTime() != null) {
 					result.addError(
 							new FieldError(result.getObjectName(), "attendanceList[" + i + "].trainingStartHour",
@@ -505,7 +508,6 @@ public class StudentAttendanceService {
 				}
 
 				// e:出勤時間＞退勤時間チェック
-				//				if (form.getTrainingStartTime() != null && form.getTrainingEndTime() != null) {
 				if (form.getTrainingStartHour() != null && form.getTrainingStartMinute() != null &&
 						form.getTrainingEndHour() != null && form.getTrainingEndMinute() != null) {
 

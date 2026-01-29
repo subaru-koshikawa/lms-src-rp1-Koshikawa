@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
-
 /**
  * 研修時刻ユーティリティ
  * 
