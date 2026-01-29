@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -14,6 +15,7 @@ import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
+import jp.co.sss.lms.util.AttendanceUtil;
 import jp.co.sss.lms.util.Constants;
 
 /**
@@ -29,6 +31,8 @@ public class AttendanceController {
 	private StudentAttendanceService studentAttendanceService;
 	@Autowired
 	private LoginUserDto loginUserDto;
+	@Autowired
+	private AttendanceUtil attendanceUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -40,7 +44,7 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
-	public String index(Model model){
+	public String index(Model model) throws ParseException {
 
 		// 勤怠一覧の取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
@@ -49,9 +53,8 @@ public class AttendanceController {
 
 		// Task25 越川
 		//  下記APIを呼び出し、過去日の未入力数をカウント
-		boolean showDialog = studentAttendanceService.notEnterCheck(loginUserDto.getLmsUserId());
-				
-		
+		boolean showDialog = studentAttendanceService.notEnterCheck();
+
 		//これはコントローラーで大丈夫
 		model.addAttribute("showUnenteredDialog", showDialog);
 
@@ -143,9 +146,25 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
-	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
+	public String complete(@ModelAttribute AttendanceForm attendanceForm, BindingResult result, Model model)
 			throws ParseException {
+		
+		studentAttendanceService.formatConversion(attendanceForm);
+		studentAttendanceService.updateInputCheck(attendanceForm, result);
+		
+
+		if (result.hasErrors()) {
+			//時間と分、中抜け時間のプルダウン(エラーで画面を戻したときプルダウンの中身が消えないようにする）
+			attendanceForm.setHourMap(attendanceUtil.getHourMap());
+			attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
+			attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+
+			model.addAttribute("attendanceForm", attendanceForm);
+
+			return "attendance/update";
+		}
 		// 更新
+
 		String message = null;
 		try {
 			message = studentAttendanceService.update(attendanceForm);
@@ -160,7 +179,7 @@ public class AttendanceController {
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
 
-		return "attendance/detail";
+		return "redirect:/attendance/detail";
 	}
 
 }

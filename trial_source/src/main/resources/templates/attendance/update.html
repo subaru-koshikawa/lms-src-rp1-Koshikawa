@@ -26,12 +26,11 @@
 
 			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
 
+				<!--Task27 越川-->
 				<div th:if="${#fields.hasErrors('*')}">
 					<ul style="padding-left: 0; list-style: none;">
-						<li>
-							<span th:each="error : ${#fields.detailedErrors()}" th:text="${error.message}"
-								style="color: crimson;">
-							</span>
+						<li th:each="error : ${#fields.detailedErrors()}">
+							<span th:text="${error.message}" style="color: crimson;"></span>
 						</li>
 					</ul>
 				</div>
@@ -81,9 +80,9 @@
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
 
 								<!--越川 Task26,27-->
-								
+
 								<td class="w70">
-									
+
 									<select th:name="|attendanceList[${stat.index}].trainingStartHour|"
 										class="form-control" th:errorclass="errorInput">
 										<option th:each="h : ${attendanceForm.hourMap}" th:value="${h.key}"
@@ -98,7 +97,7 @@
 								<td>:</td>
 
 								<td class="w70">
-									
+
 									<select th:name="|attendanceList[${stat.index}].trainingStartMinute|"
 										class="form-control" th:errorclass="errorInput">
 										<option th:each="m : ${attendanceForm.minuteMap}" th:value="${m.key}"
@@ -108,7 +107,7 @@
 										</option>
 									</select>
 								</td>
-								
+
 								<td class="w70">
 									<div th:if="${#fields.hasErrors('attendanceList[__${stat.index}__].trainingEndHour')}"
 										style="background-color: crimson;">
@@ -171,22 +170,18 @@
 
 				<div class="form-group">
 					<a th:href="@{/attendance/detail}" class="btn btn-default">戻る</a>
-					<!--					<form th:action="@{/attendance/update}" th:object="${attendanceForm}" method="post">-->
 					<input type="submit" id="update-button" value="更新" name="complete" class="btn btn-info" />
-
-					<!--					</form>-->
 				</div>
 
 			</form>
 		</div>
 	</div>
+	<!-- Task27 越川 -->
 	<script type="text/javascript" th:inline="javascript">
 		$('#update-button').on('click', function () {
-			// 確認ダイアログを表示
 			if (!confirm("更新します。よろしいですか？")) {
 				return false; // 送信をキャンセル
 			}
-			// OKが押された場合はそのまま submit 
 		});
 	</script>
 
