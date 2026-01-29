@@ -17,12 +17,27 @@
 		<th:block th:if="${session.loginUserDto.leaveFlg == '1'}">
 			<h2><small>途中退校日：${dispLeaveDate}</small></h2>
 		</th:block>
+
 	</th:block>
 
 	<div class="row">
 		<div class="bs-component col-sm-12">
 
-			<form th:action="@{/attendance/update}" method="post">
+
+			<form th:action="@{/attendance/update}" method="post" th:object="${attendanceForm}">
+
+				<div th:if="${#fields.hasErrors('*')}">
+					<ul style="padding-left: 0; list-style: none;">
+						<li>
+							<span th:each="error : ${#fields.detailedErrors()}" th:text="${error.message}"
+								style="color: crimson;">
+							</span>
+						</li>
+					</ul>
+				</div>
+
+
+
 				<table class="table table-hover dataTable no-footer">
 					<thead>
 						<tr>
@@ -45,7 +60,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<th:block th:each="dailyAttendanceForm, stat : *{attendanceForm.attendanceList}">
+						<th:block th:each="dailyAttendanceForm, stat : *{attendanceList}">
+
 							<tr>
 								<th:block>
 									<input type="hidden" th:name="|attendanceList[${stat.index}].isToday|"
@@ -64,23 +80,27 @@
 								<td class="w140">[[${dailyAttendanceForm.dispTrainingDate}]]</td>
 								<td class="w300">[[${dailyAttendanceForm.sectionName}]]</td>
 
-
+								<!--越川 Task26,27-->
+								
 								<td class="w70">
+									
 									<select th:name="|attendanceList[${stat.index}].trainingStartHour|"
-										class="form-control">
+										class="form-control" th:errorclass="errorInput">
 										<option th:each="h : ${attendanceForm.hourMap}" th:value="${h.key}"
 											th:inlne="text" class="form-control"
 											th:selected="${h.key == dailyAttendanceForm.trainingStartHour}">
 											[[${h.value}]]
 										</option>
 									</select>
+
 								</td>
 
 								<td>:</td>
 
 								<td class="w70">
+									
 									<select th:name="|attendanceList[${stat.index}].trainingStartMinute|"
-										class="form-control">
+										class="form-control" th:errorclass="errorInput">
 										<option th:each="m : ${attendanceForm.minuteMap}" th:value="${m.key}"
 											th:inlne="text" class="form-control"
 											th:selected="${m.key == dailyAttendanceForm.trainingStartMinute}">
@@ -88,9 +108,13 @@
 										</option>
 									</select>
 								</td>
+								
 								<td class="w70">
+									<div th:if="${#fields.hasErrors('attendanceList[__${stat.index}__].trainingEndHour')}"
+										style="background-color: crimson;">
+									</div>
 									<select th:name="|attendanceList[${stat.index}].trainingEndHour|"
-										class="form-control">
+										class="form-control" th:errorclass="errorInput">
 										<option th:each="h : ${attendanceForm.hourMap}" th:value="${h.key}"
 											th:inlne="text" class="form-control"
 											th:selected="${h.key == dailyAttendanceForm.trainingEndHour}">
@@ -102,8 +126,11 @@
 								<td>:</td>
 
 								<td class="w70">
+									<div th:if="${#fields.hasErrors('attendanceList[__${stat.index}__].trainingEndMinute')}"
+										style="background-color: crimson;">
+									</div>
 									<select th:name="|attendanceList[${stat.index}].trainingEndMinute|"
-										class="form-control">
+										class="form-control" th:errorclass="errorInput">
 										<option th:each="m : ${attendanceForm.minuteMap}" th:value="${m.key}"
 											th:inlne="text" class="form-control"
 											th:selected="${m.key == dailyAttendanceForm.trainingEndMinute}">
@@ -114,7 +141,11 @@
 								</td>
 
 								<td class="w80">
-									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control">
+									<div th:if="${#fields.hasErrors('attendanceList[__${stat.index}__].blankTime')}"
+										style="background-color: crimson;">
+									</div>
+									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control"
+										th:errorclass="errorInput">
 										<option th:each="blankTime : ${attendanceForm.blankTimes}"
 											th:value="${blankTime.key}" th:inlne="text" class="form-control"
 											th:selected="${blankTime.key == dailyAttendanceForm.blankTime}">
@@ -124,8 +155,14 @@
 								</td>
 								<td class="w70">[[${dailyAttendanceForm.statusDispName}]]</td>
 								<td class="w140">
+
 									<input type="text" th:name="|attendanceList[${stat.index}].note|"
-										th:value="${dailyAttendanceForm.note}" class="form-control"></input>
+										th:value="${dailyAttendanceForm.note}" class="form-control"
+										th:errorclass="errorInput">
+									</input>
+									<div th:if="${#fields.hasErrors('attendanceList[__${stat.index}__].note')}"
+										style="background-color: crimson;">
+									</div>
 								</td>
 							</tr>
 						</th:block>
@@ -134,10 +171,10 @@
 
 				<div class="form-group">
 					<a th:href="@{/attendance/detail}" class="btn btn-default">戻る</a>
-					<form th:action="@{/attendance/update}" th:object="${attendanceForm}" method="post">
-						<input type="submit" id="update-button" value="更新" name="complete" class="btn btn-info" />
+					<!--					<form th:action="@{/attendance/update}" th:object="${attendanceForm}" method="post">-->
+					<input type="submit" id="update-button" value="更新" name="complete" class="btn btn-info" />
 
-					</form>
+					<!--					</form>-->
 				</div>
 
 			</form>
@@ -145,15 +182,15 @@
 	</div>
 	<script type="text/javascript" th:inline="javascript">
 		$('#update-button').on('click', function () {
-			// 確認ダイアログを表示。キャンセル(いいえ)が押されたら false 
+			// 確認ダイアログを表示
 			if (!confirm("更新します。よろしいですか？")) {
 				return false; // 送信をキャンセル
 			}
 			// OKが押された場合はそのまま submit 
 		});
 	</script>
-	
-	
+
+
 </body>
 
 </html>
